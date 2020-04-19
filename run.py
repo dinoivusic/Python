@@ -1,4 +1,4 @@
-from kryptos import app
+from Kryptos.kryptos import app
 
 
 if __name__ == '__main__':
