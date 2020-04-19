@@ -9,7 +9,6 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
-from sklearn.linear_model import LinearRegression
 
 
 @app.route("/")
@@ -29,12 +28,11 @@ def suggestions():
     path = os.path.abspath(r'kryptos/ether.csv')
     df = pd.read_csv(path)
     df.drop(['Date'], 1, inplace=True)
-    df.fillna(-99999, inplace=True)
     # A variable for predicting n days in future
     prediction_days = 30
     # Create dependent variables shifted n units up
     df['Prediction'] = df[['Price']].shift(-prediction_days)
-    # Create independent dataset and convert df to numpy array and drop prediction column
+    # Create independent dataset and convert df to numpy array and drop prediciton column
     X = np.array(df.drop(['Prediction'], 1))
     # Remove n days rows
     X = X[:len(df) - prediction_days]
@@ -43,29 +41,23 @@ def suggestions():
     # Get all values except the last n rows
     y = y[:-prediction_days]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    lr = LinearRegression()
-    # Train this model
-    lr.fit(X_train, y_train)
-    # Test model: Score return coeficient of determination R`2 of prediction
-    lr_conf = lr.score(X_test, y_test)
-    print('lr conf:', lr_conf)
-    # Set x_forecast equal to last 30 rows of original dataset from Close column
-    x_forecast = np.array(df.drop(['Prediction'], 1))[-prediction_days:]
-    # print(x_forecast)
-    # Print linear regression model predictions for n newxt days
-    lr_prediction = lr.predict(x_forecast)
-    predictionEth = float(lr_prediction[-1])
+    # Set prediction days list equal to last 30 rows
+    prediciton_days_list = np.array(df.drop(['Prediction'], 1))[-1:]
+    # Create and train model SVM
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.00001)
+    svr_rbf.fit(X_train, y_train)
+    #svr_rbf.predict(X_test)
+    predictionEth = float(svr_rbf.predict(prediciton_days_list))
 
     #Btc
     path = os.path.abspath(r'kryptos/Bitcoins.csv')
     df = pd.read_csv(path)
     df.drop(['Date'], 1, inplace=True)
-    df.fillna(-99999, inplace=True)
     # A variable for predicting n days in future
     prediction_days = 30
     # Create dependent variables shifted n units up
     df['Prediction'] = df[['Price']].shift(-prediction_days)
-    # Create independent dataset and convert df to numpy array and drop prediction column
+    # Create independent dataset and convert df to numpy array and drop prediciton column
     X = np.array(df.drop(['Prediction'], 1))
     # Remove n days rows
     X = X[:len(df) - prediction_days]
@@ -74,29 +66,23 @@ def suggestions():
     # Get all values except the last n rows
     y = y[:-prediction_days]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    lr = LinearRegression()
-    # Train this model
-    lr.fit(X_train, y_train)
-    # Test model: Score return coeficient of determination R`2 of prediction
-    lr_conf = lr.score(X_test, y_test)
-    print('lr conf:', lr_conf)
-    # Set x_forecast equal to last 30 rows of original dataset from Close column
-    x_forecast = np.array(df.drop(['Prediction'], 1))[-prediction_days:]
-    # print(x_forecast)
-    # Print linear regression model predictions for n newxt days
-    lr_prediction = lr.predict(x_forecast)
-    predictionBtc = float(lr_prediction[-1])
+    # Set prediction days list equal to last 30 rows
+    prediciton_days_list = np.array(df.drop(['Prediction'], 1))[-1:]
+    # Create and train model SVM
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.00001)
+    svr_rbf.fit(X_train, y_train)
+    # svr_rbf.predict(X_test)
+    predictionBtc = float(svr_rbf.predict(prediciton_days_list))
 
     #LTC
     path = os.path.abspath(r'kryptos/litecoin.csv')
     df = pd.read_csv(path)
     df.drop(['Date'], 1, inplace=True)
-    df.fillna(-99999, inplace=True)
     # A variable for predicting n days in future
     prediction_days = 30
     # Create dependent variables shifted n units up
     df['Prediction'] = df[['Price']].shift(-prediction_days)
-    # Create independent dataset and convert df to numpy array and drop prediction column
+    # Create independent dataset and convert df to numpy array and drop prediciton column
     X = np.array(df.drop(['Prediction'], 1))
     # Remove n days rows
     X = X[:len(df) - prediction_days]
@@ -105,30 +91,24 @@ def suggestions():
     # Get all values except the last n rows
     y = y[:-prediction_days]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    lr = LinearRegression()
-    # Train this model
-    lr.fit(X_train, y_train)
-    # Test model: Score return coeficient of determination R`2 of prediction
-    lr_conf = lr.score(X_test, y_test)
-    print('lr conf:', lr_conf)
-    # Set x_forecast equal to last 30 rows of original dataset from Close column
-    x_forecast = np.array(df.drop(['Prediction'], 1))[-prediction_days:]
-    # print(x_forecast)
-    # Print linear regression model predictions for n newxt days
-    lr_prediction = lr.predict(x_forecast)
-    predictionLtc = float(lr_prediction[-1])
+    # Set prediction days list equal to last 30 rows
+    prediciton_days_list = np.array(df.drop(['Prediction'], 1))[-1:]
+    # Create and train model SVM
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.00001)
+    svr_rbf.fit(X_train, y_train)
+    # svr_rbf.predict(X_test)
+    predictionLtc = float(svr_rbf.predict(prediciton_days_list))
 
 
     #NEO
     path = os.path.abspath(r'kryptos/neo.csv')
     df = pd.read_csv(path)
     df.drop(['Date'], 1, inplace=True)
-    df.fillna(-99999, inplace=True)
     # A variable for predicting n days in future
     prediction_days = 30
     # Create dependent variables shifted n units up
     df['Prediction'] = df[['Price']].shift(-prediction_days)
-    # Create independent dataset and convert df to numpy array and drop prediction column
+    # Create independent dataset and convert df to numpy array and drop prediciton column
     X = np.array(df.drop(['Prediction'], 1))
     # Remove n days rows
     X = X[:len(df) - prediction_days]
@@ -137,19 +117,15 @@ def suggestions():
     # Get all values except the last n rows
     y = y[:-prediction_days]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    lr = LinearRegression()
-    # Train this model
-    lr.fit(X_train, y_train)
-    # Test model: Score return coeficient of determination R`2 of prediction
-    lr_conf = lr.score(X_test, y_test)
-    print('lr conf:', lr_conf)
-    # Set x_forecast equal to last 30 rows of original dataset from Close column
-    x_forecast = np.array(df.drop(['Prediction'], 1))[-prediction_days:]
-    # print(x_forecast)
-    # Print linear regression model predictions for n newxt days
-    lr_prediction = lr.predict(x_forecast)
-    predictionNeo = float(lr_prediction[-1])
+    # Set prediction days list equal to last 30 rows
+    prediciton_days_list = np.array(df.drop(['Prediction'], 1))[-1:]
+    # Create and train model SVM
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.00001)
+    svr_rbf.fit(X_train, y_train)
+    # svr_rbf.predict(X_test)
+    predictionNeo = float(svr_rbf.predict(prediciton_days_list))
     return render_template('suggestions.html', title='Suggestions', predictionEth=predictionEth, predictionBtc=predictionBtc, predictionLtc=predictionLtc, predictionNeo=predictionNeo)
+
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -253,7 +229,6 @@ def update_post(post_id):
         form.title.data = post.title
         form.content.data = post.content
     return render_template('create_post.html', title='Update Post', form=form, legend='Update Post')
-
 
 @app.route("/post/<int:post_id>/delete", methods=['POST'])
 @login_required
