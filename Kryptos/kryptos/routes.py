@@ -1,6 +1,6 @@
 from kryptos.models import User, Post
-from flask import render_template, url_for, flash, redirect, request,abort, jsonify,request
-from kryptos import app, db
+from flask import render_template, url_for, flash, redirect, request, abort, jsonify, request
+from kryptos import app, db # remove it
 from kryptos.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
