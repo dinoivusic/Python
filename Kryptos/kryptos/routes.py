@@ -5,11 +5,18 @@ from kryptos.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostFo
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
+import csv
+import requests
+import json
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 from sklearn.linear_model import LinearRegression
+
+
+coinLtc = 'http://api.coincap.io/v2/assets/litecoin'
+coinNeo = 'http://api.coincap.io/v2/assets/neo'
 
 
 @app.route("/")
@@ -26,9 +33,25 @@ def about():
 
 @app.route("/suggestions")
 def suggestions():
+    session = requests.Session()
+    coinEth = 'http://api.coincap.io/v2/assets/ethereum'
+    response = session.get(coinEth)
+    data = response.json()
+
+    ethPrice = float(data['data']['priceUsd'])
+    ethTime = data['timestamp']
+    dt_object = datetime.fromtimestamp(ethTime / 1000)
+    usdVolume = data['data']['volumeUsd24Hr']
+    params = [dt_object, float(ethPrice), float(ethPrice),
+              float(ethPrice), ethPrice, usdVolume]
+    with open('ether.csv', 'a') as eth:
+        writer = csv.writer(eth)
+        writer.writerow(params)
+
     path = os.path.abspath(r'kryptos/ether.csv')
     df = pd.read_csv(path)
     df.drop(['Date'], 1, inplace=True)
+    df.drop('Volume ETH', 1, inplace=True)
     df.fillna(-99999, inplace=True)
     # A variable for predicting n days in future
     prediction_days = 30
@@ -57,9 +80,30 @@ def suggestions():
     predictionEth = float(lr_prediction[-1])
 
     #Btc
+    coinBtc = 'http://api.coincap.io/v2/assets/bitcoin'
+    session = requests.Session()
+    try:
+        response = session.get(coinBtc)
+        data = response.json()
+        print(json.dumps(data, sort_keys=True, indent=4))
+    except (ConnectionError, Timeout, TooManyRedirects) as err:
+        print(err)
+
+    btcPrice = float(data['data']['priceUsd'])
+    btcTime = data['timestamp']
+    dt_object = datetime.fromtimestamp(btcTime / 1000)
+    usdVolume = data['data']['volumeUsd24Hr']
+    params = [dt_object, float(btcPrice), float(btcPrice),
+              float(btcPrice), btcPrice, usdVolume]
+
+    with open('Bitcoins.csv', 'a') as btc:
+        writer = csv.writer(btc)
+        writer.writerow(params)
+
     path = os.path.abspath(r'kryptos/Bitcoins.csv')
     df = pd.read_csv(path)
     df.drop(['Date'], 1, inplace=True)
+    df.drop('Volume BTC', 1, inplace=True)
     df.fillna(-99999, inplace=True)
     # A variable for predicting n days in future
     prediction_days = 30
